@@ -335,14 +335,14 @@ export default function QRGeneratorPage() {
                                                 <QRCodeCanvas
                                                     value={qrData}
                                                     size={256}
-                                                    level={"H"}
-                                                    marginSize={4}
+                                                    level={"M"}
+                                                    marginSize={0}
                                                     imageSettings={{
                                                         src: "/LogoBlack.png",
                                                         x: undefined,
                                                         y: undefined,
-                                                        height: 44,
-                                                        width: 44,
+                                                        height: 54,
+                                                        width: 54,
                                                         excavate: true,
                                                     }}
                                                     className={`w-full h-auto`}
@@ -414,7 +414,7 @@ export default function QRGeneratorPage() {
                                         <li className="flex items-start gap-3">
                                             <span className="text-red-500 mt-0.5 font-black text-lg">!</span>
                                             <span>
-                                                <strong className="text-red-400">YOUR RESPONSIBILITY:</strong> <br />You must verify the pass email before leaving the issuing desk.
+                                                <strong className="text-red-400">YOUR RESPONSIBILITY:</strong> <br />You must verify the pass received email before leaving the issuing desk.
                                             </span>
                                         </li>
                                     </ul>

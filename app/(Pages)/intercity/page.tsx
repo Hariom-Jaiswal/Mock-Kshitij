@@ -1,6 +1,6 @@
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
-import IntercityPage from "@/app/components/IntercityPage";
+import IntercityPage from "@/app/(Pages)/intercity/IntercityPage";
 
 export default function Page() {
     return (

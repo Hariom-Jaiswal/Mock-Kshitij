@@ -1,8 +1,8 @@
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import AboutTheme from './components/AboutTheme';
-import Countdown from './components/Countdown';
-import Footer from './components/Footer';
+import Navbar from '@/app/components/Navbar';
+import Hero from '@/app/components/Hero';
+import AboutTheme from '@/app/components/AboutTheme';
+import Countdown from '@/app/components/Countdown';
+import Footer from '@/app/components/Footer';
 
 export default function Home() {
   return (

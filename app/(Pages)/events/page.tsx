@@ -1,6 +1,6 @@
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
-import EventsPage from "@/app/components/EventsPage";
+import EventsPage from "@/app/(Pages)/events/EventsPage";
 
 export default function Page() {
     return (

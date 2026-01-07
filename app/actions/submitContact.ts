@@ -8,6 +8,13 @@ export async function submitContact(prevState: any, formData: FormData) {
     const phone = formData.get('phone') as string;
     const email = formData.get('email') as string;
     const message = formData.get('message') as string;
+    const honeypot = formData.get('website') as string;
+
+    // Honeypot Spam Protection
+    if (honeypot) {
+        // Silently fail for bots (return success to trick them)
+        return { success: true, message: 'Message sent successfully!' };
+    }
 
     if (!name || !phone || !email || !message) {
         return { success: false, message: 'Please fill in all fields.' };
@@ -27,12 +34,15 @@ export async function submitContact(prevState: any, formData: FormData) {
         await doc.loadInfo();
         const sheet = doc.sheetsByIndex[0];
 
+        const now = new Date();
         await sheet.addRow({
-            Timestamp: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+            Date: now.toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' }),
+            Time: now.toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata' }),
             Name: name,
             Phone: phone,
             Email: email,
             Message: message,
+            Status: 'Waiting',
         });
 
         return { success: true, message: 'Message sent successfully!' };

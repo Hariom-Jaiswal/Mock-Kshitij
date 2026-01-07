@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X, ChevronDown, Ticket } from 'lucide-react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -27,12 +27,14 @@ const navItems: NavItem[] = [
             { name: 'WEB TEAM', href: '/websiteTeam' }
         ]
     },
+    { name: 'SPONSORS', href: '/sponsors' },
     { name: 'CONTACT', href: '/contact' },
 ];
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
     const [mobileDropdown, setMobileDropdown] = useState<string | null>(null);
+    const [showLegacyVideo, setShowLegacyVideo] = useState(false);
     const navRef = useRef<HTMLDivElement>(null);
     const linksRef = useRef<HTMLDivElement>(null);
     const logoRef = useRef<HTMLAnchorElement>(null);
@@ -75,6 +77,7 @@ export default function Navbar() {
                 tl.to(linksContainer, {
                     width: 0,
                     paddingLeft: 0,
+                    pointerEvents: 'none', // DISABLE clicks when collapsed
                     duration: 0.8, // Takes up 50% of scroll
                     ease: "power1.inOut"
                 }, 0.3);
@@ -111,11 +114,12 @@ export default function Navbar() {
     // Hover Animation (Expand when collapsed)
     const handleMouseEnter = () => {
         // Only expand if we are scrolled past the hero (roughly)
-        if (window.scrollY < window.innerHeight * 0.) return;
+        if (window.scrollY < window.innerHeight * 0.5) return;
 
         gsap.to(linksContainerRef.current, {
             width: 'auto',
             paddingLeft: '32px',
+            pointerEvents: 'auto', // RE-ENABLE clicks on hover
             duration: 0.4,
             ease: 'power2.out'
         });
@@ -142,12 +146,18 @@ export default function Navbar() {
         gsap.to(linksContainerRef.current, {
             width: 0,
             paddingLeft: 0,
+            pointerEvents: 'none', // DISABLE clicks on leave
             duration: 0.4,
             ease: 'power2.inOut'
         });
     };
 
     useEffect(() => {
+        if (!isOpen) {
+            setMobileDropdown(null);
+            return;
+        }
+
         if (isOpen) {
             const tl = gsap.timeline();
 
@@ -171,6 +181,17 @@ export default function Navbar() {
                 "-=0.2"
             );
         }
+
+        // Lock Body Scroll
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+
+        return () => {
+            document.body.style.overflow = ''; // Cleanup
+        };
     }, [isOpen]);
 
     return (
@@ -180,11 +201,15 @@ export default function Navbar() {
                 className="fixed z-50 flex items-center justify-between overflow-hidden lg:overflow-visible transition-all duration-300
                     lg:top-0 lg:left-0 lg:right-0 lg:rounded-none lg:border-transparent lg:bg-transparent lg:backdrop-blur-none lg:shadow-none lg:w-full lg:max-w-full lg:p-6
                     top-4 left-4 right-4 rounded-full border border-[#FFD700]/20 bg-[#121212]/80 backdrop-blur-xl shadow-[0_0_20px_rgba(255,215,0,0.1)] px-6 py-3"
-                onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
             >
                 {/* Logo */}
-                <Link href="/" className="relative w-10 h-10 lg:w-12 lg:h-12 group shrink-0" ref={logoRef}>
+                <Link
+                    href="/"
+                    className="relative w-10 h-10 lg:w-12 lg:h-12 group shrink-0"
+                    ref={logoRef}
+                    onMouseEnter={handleMouseEnter}
+                >
                     <Image
                         src="/kshitij.webp"
                         alt="Kshitij Logo"
@@ -249,6 +274,56 @@ export default function Navbar() {
                             </div>
                         ))}
 
+                        {/* Pronight Pass Ticket Button (Desktop) */}
+                        <Link
+                            href="/get-pass"
+                            className="relative px-6 py-2 mx-2 group overflow-hidden"
+                            onMouseEnter={() => setShowLegacyVideo(true)}
+                            onMouseLeave={() => setShowLegacyVideo(false)}
+                        >
+                            {/* Ticket Shape Background - CRIMSON GRADIENT */}
+                            <div
+                                className="absolute inset-0 bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] rounded-sm transform transition-transform duration-300 group-hover:scale-105"
+                                style={{
+                                    maskImage: 'radial-gradient(circle at 0 50%, transparent 7px, black 7.5px), radial-gradient(circle at 100% 50%, transparent 7px, black 7.5px)',
+                                    WebkitMaskImage: 'radial-gradient(circle at 0 50%, transparent 7px, black 7.5px), radial-gradient(circle at 100% 50%, transparent 7px, black 7.5px)',
+                                    maskComposite: 'exclude',
+                                    WebkitMaskComposite: 'source-in'
+                                }}
+                            >
+                                {/* Holographic Shine */}
+                                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent -translate-x-[200%] group-hover:translate-x-[200%] transition-transform duration-[1.5s] ease-in-out" />
+                            </div>
+
+                            {/* Dashed Vertical Divider */}
+                            <div className="absolute top-1 bottom-1 left-[25%] border-l border-white/20 border-dashed" />
+
+                            <div className="relative flex items-center gap-3 text-white font-black text-xs tracking-widest z-10" style={{ fontFamily: 'var(--font-helvetica-neue)' }}>
+                                <Ticket className="w-4 h-4 fill-white/20 stroke-white stroke-2" />
+                                <span>PRONIGHT PASS</span>
+                            </div>
+                        </Link>
+
+                        {/* HOVER VIDEO OVERLAY - LEGACY HYPE */}
+                        <div
+                            className={`fixed inset-0 z-[-1] transition-opacity duration-700 pointer-events-none ${showLegacyVideo ? 'opacity-100' : 'opacity-0'}`}
+                        >
+                            <div className="absolute inset-0 bg-black/60 z-10" /> {/* Dark overlay for contrast */}
+                            <video
+                                src="/Teaser.mp4"
+                                autoPlay
+                                loop
+                                muted
+                                playsInline
+                                preload="auto"
+                                className="w-full h-full object-cover transform scale-105"
+                            />
+                            <div className="absolute inset-0 z-20 flex items-center justify-center">
+                                {/*<h2 className="text-[#FFD700] text-9xl font-black tracking-tighter opacity-20 mix-blend-overlay scale-150 select-none" style={{ fontFamily: 'var(--font-bold-helvetica)' }}>
+                                    LEGACY
+                                </h2>*/}
+                            </div>
+                        </div>
 
                         {/* Register Button */}
                         <Link
@@ -272,20 +347,34 @@ export default function Navbar() {
 
             {/* Mobile Menu Overlay */}
             {isOpen && (
-                <div className="fixed inset-0 z-60 bg-black/95 backdrop-blur-2xl flex flex-col items-center justify-center">
-                    {/* Background Pattern */}
-                    <div className="absolute inset-0 opacity-1 pointer-events-none" style={{ backgroundImage: 'url("/desi_pattern_bg.png")', backgroundSize: 'cover' }} />
+                <div className="fixed inset-0 z-[60] bg-black/95 backdrop-blur-2xl overflow-y-auto h-[100dvh] overscroll-contain">
+                    {/* Background Video for Mobile Hype */}
+                    <div className="fixed inset-0 pointer-events-none opacity-40">
+                        <video
+                            src="/Teaser.mp4"
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            preload="auto"
+                            className="w-full h-full object-cover grayscale"
+                        />
+                        <div className="absolute inset-0 bg-black/10" />
+                    </div>
+
+                    {/* Background Pattern (Overlay on video) */}
+                    <div className="fixed inset-0 opacity-30 pointer-events-none mix-blend-overlay" style={{ backgroundImage: 'url("/desi_pattern_bg.png")', backgroundSize: 'cover' }} />
 
                     {/* Close Button */}
                     <button
-                        className="absolute top-6 right-6 text-[#FFD700] hover:text-white transition-colors z-20"
+                        className="fixed top-6 right-6 text-[#FFD700] hover:text-white transition-colors z-50 p-2 bg-black/20 rounded-full backdrop-blur-md"
                         onClick={() => setIsOpen(false)}
                     >
                         <X className="w-8 h-8" />
                     </button>
 
                     {/* Main Menu Content */}
-                    <div className="flex flex-col gap-10 items-center justify-center relative z-10 w-full h-full pb-10">
+                    <div className="flex flex-col gap-6 items-center justify-start min-h-screen py-24 relative z-10 w-full">
                         {/* Logo at Top */}
                         <div className="mobile-logo w-64 opacity-0">
                             <Image
@@ -341,15 +430,38 @@ export default function Navbar() {
                             ))}
                         </div>
 
-                        {/* CTA Button */}
-                        <Link
-                            href="https://regi.mithibaikshitij.com/"
-                            className="mobile-cta mobile-item mt-4 px-12 py-4 rounded-none border-2 border-[#FFD700] bg-black/50 text-[#FFD700] font-bold text-2xl uppercase tracking-widest hover:bg-[#FFD700] hover:text-black transition-all shadow-[0_0_20px_rgba(255,215,0,0.2)] hover:shadow-[0_0_30px_rgba(255,215,0,0.6)] opacity-0"
-                            style={{ fontFamily: 'var(--font-bold-helvetica)' }}
-                            onClick={() => setIsOpen(false)}
-                        >
-                            REGISTER NOW
-                        </Link>
+                        <div className="flex flex-col items-center gap-4 w-full px-8 pb-8">
+                            {/* Pronight Pass Mobile */}
+                            <Link
+                                href="/get-pass"
+                                className="mobile-item w-full max-w-xs mx-auto relative group overflow-hidden"
+                                onClick={() => setIsOpen(false)}
+                            >
+                                <div
+                                    className="absolute inset-0 bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] rounded-lg"
+                                    style={{
+                                        maskImage: 'radial-gradient(circle at 0 50%, transparent 10px, black 10.5px), radial-gradient(circle at 100% 50%, transparent 10px, black 10.5px)',
+                                        WebkitMaskImage: 'radial-gradient(circle at 0 50%, transparent 10px, black 10.5px), radial-gradient(circle at 100% 50%, transparent 10px, black 10.5px)'
+                                    }}
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent -translate-x-[200%] animate-[shimmer_3s_infinite]" />
+
+                                <div className="relative px-6 py-4 flex items-center justify-center gap-3 text-white font-black text-lg uppercase tracking-widest z-10">
+                                    <Ticket className="w-6 h-6 fill-white/20 stroke-white" />
+                                    <span>PRONIGHT PASS</span>
+                                </div>
+                            </Link>
+
+                            {/* CTA Button */}
+                            <Link
+                                href="https://regi.mithibaikshitij.com/"
+                                className="mobile-cta mobile-item mt-4 px-12 py-4 rounded-none border-2 border-[#FFD700] bg-black/50 text-[#FFD700] font-bold text-2xl uppercase tracking-widest hover:bg-[#FFD700] hover:text-black transition-all shadow-[0_0_20px_rgba(255,215,0,0.2)] hover:shadow-[0_0_30px_rgba(255,215,0,0.6)] opacity-0"
+                                style={{ fontFamily: 'var(--font-bold-helvetica)' }}
+                                onClick={() => setIsOpen(false)}
+                            >
+                                REGISTER NOW
+                            </Link>
+                        </div>
                     </div>
                 </div>
             )}

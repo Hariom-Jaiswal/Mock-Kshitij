@@ -20,12 +20,10 @@ export default function Footer() {
                 />
             </div>
 
-           
             <div className="max-w-7xl mx-auto px-6 pb-45 relative z-10">
                 <div className="grid grid-cols-2 lg:grid-cols-[auto_auto_auto] gap-8 md:gap-12 items-start">
 
                     {/* Column 1: Logo & Socials */}
-                    
                     <div className="flex flex-col items-center md:items-start space-y-6 col-span-2 lg:col-span-1">
                         <div className="relative w-full h-38 lg:w-xl">
                             <Image
@@ -85,7 +83,6 @@ export default function Footer() {
                 </div>
 
             </div>
-             
         </footer>
     );
 }

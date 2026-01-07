@@ -1,4 +1,4 @@
-import ContactPage from "@/app/components/ContactPage";
+import ContactPage from "@/app/(Pages)/contact/ContactPage";
 import Footer from "@/app/components/Footer";
 import Navbar from "@/app/components/Navbar";
 

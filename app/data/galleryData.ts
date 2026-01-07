@@ -6,9 +6,9 @@ export interface GalleryImage {
     size?: "wide" | "tall" | "normal"; // For masonry layout hints
 }
 
-// Generating 63 images (1.jpg to 63.jpg)
+// Generating 62 images (1.jpg to 62.jpg)
 // NOTE TO USER: You can manually change the 'category' for specific IDs to enable filtering!
-export const galleryImages: GalleryImage[] = Array.from({ length: 63 }, (_, i) => ({
+export const galleryImages: GalleryImage[] = Array.from({ length: 62 }, (_, i) => ({
     id: i + 1,
     src: `/Gallery/${i + 1}.jpg`,
     category: "HIGHLIGHTS", // Default category

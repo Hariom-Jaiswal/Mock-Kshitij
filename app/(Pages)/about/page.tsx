@@ -1,6 +1,6 @@
-import Navbar from '../../components/Navbar';
-import AboutKshitij from '../../components/AboutKshitij';
-import Footer from '../../components/Footer';
+import Navbar from '@/app/components/Navbar';
+import AboutKshitij from '@/app/(Pages)/about/AboutKshitij';
+import Footer from '@/app/components/Footer';
 
 export default function AboutPage() {
     return (

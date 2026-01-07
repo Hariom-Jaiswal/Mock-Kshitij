@@ -25,11 +25,7 @@ const FlipCard = ({ value, label, animated = true, style }: { value: number; lab
             return;
         }
 
-        // If already flipping, complete immediately to start new flip
-        if (isFlipping && tlRef.current) {
-            tlRef.current.progress(1);
-        }
-
+        // Setup Next Value
         setNextValue(value);
         setIsFlipping(true);
 
@@ -43,21 +39,25 @@ const FlipCard = ({ value, label, animated = true, style }: { value: number; lab
 
         tlRef.current = tl;
 
-        // Faster animation for seconds (total 0.6s) to prevent overlap
+        // Ensure flaps are in starting position
+        gsap.set(topFlipRef.current, { rotationX: 0 });
+        gsap.set(bottomFlipRef.current, { rotationX: 90 });
+
+        // Animate
         tl.to(topFlipRef.current, {
             rotationX: -90,
-            duration: 0.32,
+            duration: 0.3,
             ease: "power1.in"
         })
             .to(bottomFlipRef.current, {
                 rotationX: 0,
-                duration: 0.32,
+                duration: 0.3,
                 ease: "power1.out"
-            }, "-=0.32"); // Synchronize the flip (almost)
+            });
 
     }, [value, currentValue, animated]);
 
-    // Reset rotation when not flipping
+    // Reset rotation when not flipping (Safety)
     useEffect(() => {
         if (!isFlipping && topFlipRef.current && bottomFlipRef.current) {
             gsap.set(topFlipRef.current, { rotationX: 0 });
@@ -67,28 +67,32 @@ const FlipCard = ({ value, label, animated = true, style }: { value: number; lab
 
     return (
         <div className="flex flex-col items-center mx-1 md:mx-3">
-            <div className="relative w-16 h-24 md:w-36 md:h-48" style={{ perspective: '1000px' }}>
-                {/* Static Backgrounds */}
-                <div className="absolute inset-0 bg-linear-to-b from-[#FACC15] to-[#eab308] rounded-lg md:rounded-xl flex items-center justify-center overflow-hidden shadow-[0_4px_0_#b45309,0_8px_10px_rgba(0,0,0,0.3)] border border-[#FDE047]/20">
+            {/* Main Container with Shadow - Applied here so it's not clipped by inner layers */}
+            <div className="relative w-16 h-24 md:w-36 md:h-48 rounded-lg md:rounded-xl shadow-[0_4px_0_#b45309,0_8px_10px_rgba(0,0,0,0.3)]" style={{ perspective: '1000px' }}>
+
+                {/* --- STATIC LAYERS (Background) --- */}
+
+                {/* Static Top: Shows NEXT value */}
+                <div className="absolute inset-0 bg-linear-to-b from-[#FACC15] to-[#eab308] rounded-lg md:rounded-xl flex items-center justify-center overflow-hidden border border-[#FDE047]/20"
+                    style={{ clipPath: 'inset(0 0 50% 0)' }}>
                     <span className="text-4xl md:text-8xl font-black text-black font-mono leading-none tracking-tighter translate-y-px drop-shadow-sm" style={style}>
                         {nextValue.toString().padStart(2, '0')}
                     </span>
-                    {/* Flip Line */}
                     <div className="absolute inset-x-0 top-1/2 h-px bg-black/20 z-20" />
-                    <div className="absolute inset-x-0 top-1/2 h-px bg-white/20 z-20 translate-y-px" />
                 </div>
 
-                <div className="absolute inset-0 bg-linear-to-b from-[#FACC15] to-[#eab308] rounded-lg md:rounded-xl flex items-center justify-center overflow-hidden shadow-[0_4px_0_#b45309,0_8px_10px_rgba(0,0,0,0.3)] border border-[#FDE047]/20">
+                {/* Static Bottom: Shows CURRENT value */}
+                <div className="absolute inset-0 bg-linear-to-b from-[#FACC15] to-[#eab308] rounded-lg md:rounded-xl flex items-center justify-center overflow-hidden border border-[#FDE047]/20"
+                    style={{ clipPath: 'inset(50% 0 0 0)' }}>
                     <span className="text-4xl md:text-8xl font-black text-black font-mono leading-none tracking-tighter translate-y-px drop-shadow-sm" style={style}>
                         {currentValue.toString().padStart(2, '0')}
                     </span>
-                    {/* Flip Line */}
-                    <div className="absolute inset-x-0 top-1/2 h-px bg-black/20 z-20" />
                     <div className="absolute inset-x-0 top-1/2 h-px bg-white/20 z-20 translate-y-px" />
                 </div>
 
-                {/* Animated Flaps */}
-                {/* Top Flap (Current Value) */}
+                {/* --- ANIMATED FLAPS (Foreground) --- */}
+
+                {/* Top Flap: Shows CURRENT value */}
                 <div
                     ref={topFlipRef}
                     className="absolute inset-x-0 top-0 h-1/2 bg-linear-to-b from-[#FACC15] to-[#eab308] rounded-t-lg md:rounded-t-xl overflow-hidden origin-bottom z-10 border-t border-l border-r border-[#FDE047]/20"
@@ -99,10 +103,9 @@ const FlipCard = ({ value, label, animated = true, style }: { value: number; lab
                             {currentValue.toString().padStart(2, '0')}
                         </span>
                     </div>
-                    <div className="absolute inset-0 bg-black/0" />
                 </div>
 
-                {/* Bottom Flap (Next Value) */}
+                {/* Bottom Flap: Shows NEXT value */}
                 <div
                     ref={bottomFlipRef}
                     className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-b from-[#FACC15] to-[#eab308] rounded-b-lg md:rounded-b-xl overflow-hidden origin-top z-10 border-b border-l border-r border-[#FDE047]/20"
