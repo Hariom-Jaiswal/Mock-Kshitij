@@ -174,11 +174,18 @@ export default function Navbar() {
                 "-=0.4"
             );
 
-            // 3. CTA Button Slide Up
+            // 3. Pronight Pass Slide Up (New)
+            tl.fromTo('.mobile-pronight',
+                { y: 30, opacity: 0 },
+                { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' },
+                "-=0.1"
+            );
+
+            // 4. CTA Button Slide Up
             tl.fromTo('.mobile-cta',
                 { y: 50, opacity: 0 },
                 { y: 0, opacity: 1, duration: 1, ease: 'power2.out' },
-                "-=0.2"
+                "-=0.4"
             );
         }
 
@@ -347,9 +354,9 @@ export default function Navbar() {
 
             {/* Mobile Menu Overlay */}
             {isOpen && (
-                <div className="fixed inset-0 z-[60] bg-black/95 backdrop-blur-2xl overflow-y-auto h-[100dvh] overscroll-contain">
-                    {/* Background Video for Mobile Hype */}
-                    <div className="fixed inset-0 pointer-events-none opacity-40">
+                <div className="fixed inset-0 z-[60] bg-black/95 backdrop-blur-2xl h-[100dvh]">
+                    {/* Background Video for Mobile Hype (FIXED POS) */}
+                    <div className="absolute inset-0 pointer-events-none opacity-40">
                         <video
                             src="/Teaser.mp4"
                             autoPlay
@@ -363,104 +370,106 @@ export default function Navbar() {
                     </div>
 
                     {/* Background Pattern (Overlay on video) */}
-                    <div className="fixed inset-0 opacity-30 pointer-events-none mix-blend-overlay" style={{ backgroundImage: 'url("/desi_pattern_bg.png")', backgroundSize: 'cover' }} />
+                    <div className="absolute inset-0 opacity-30 pointer-events-none mix-blend-overlay" style={{ backgroundImage: 'url("/desi_pattern_bg.png")', backgroundSize: 'cover' }} />
 
-                    {/* Close Button */}
+                    {/* Close Button (Fixed) */}
                     <button
-                        className="fixed top-6 right-6 text-[#FFD700] hover:text-white transition-colors z-50 p-2 bg-black/20 rounded-full backdrop-blur-md"
+                        className="fixed top-6 right-6 text-[#FFD700] hover:text-white transition-colors z-[70] p-2 bg-black/20 rounded-full backdrop-blur-md"
                         onClick={() => setIsOpen(false)}
                     >
                         <X className="w-8 h-8" />
                     </button>
 
-                    {/* Main Menu Content */}
-                    <div className="flex flex-col gap-6 items-center justify-start min-h-screen py-24 relative z-10 w-full">
-                        {/* Logo at Top */}
-                        <div className="mobile-logo w-64 opacity-0">
-                            <Image
-                                src="/full.svg"
-                                alt="Kshitij Full Logo"
-                                width={400}
-                                height={150}
-                                className="w-full h-auto object-contain drop-shadow-[0_0_15px_rgba(255,215,0,0.3)]"
-                            />
-                        </div>
+                    {/* SCROLLABLE CONTENT WRAPPER */}
+                    <div className="absolute inset-0 overflow-y-auto overscroll-contain z-10">
+                        <div className="flex flex-col gap-6 items-center justify-start min-h-screen py-24 w-full">
+                            {/* Logo at Top */}
+                            <div className="mobile-logo w-64 opacity-0">
+                                <Image
+                                    src="/full.svg"
+                                    alt="Kshitij Full Logo"
+                                    width={400}
+                                    height={150}
+                                    className="w-full h-auto object-contain drop-shadow-[0_0_15px_rgba(255,215,0,0.3)]"
+                                />
+                            </div>
 
-                        {/* Navigation Links */}
-                        <div className="flex flex-col items-center gap-6 w-full px-8">
-                            {navItems.map((link) => (
-                                <div key={link.name} className="flex flex-col items-center w-full">
-                                    {link.subItems ? (
-                                        <>
-                                            <button
-                                                className="mobile-nav-link mobile-item text-3xl text-center text-white/90 hover:text-[#FFD700] tracking-widest transition-all drop-shadow-lg opacity-0 flex items-center gap-2"
+                            {/* Navigation Links */}
+                            <div className="flex flex-col items-center gap-6 w-full px-8">
+                                {navItems.map((link) => (
+                                    <div key={link.name} className="flex flex-col items-center w-full">
+                                        {link.subItems ? (
+                                            <>
+                                                <button
+                                                    className="mobile-nav-link mobile-item text-3xl text-center text-white/90 hover:text-[#FFD700] tracking-widest transition-all drop-shadow-lg opacity-0 flex items-center gap-2"
+                                                    style={{ fontFamily: 'var(--font-bold-helvetica)' }}
+                                                    onClick={() => setMobileDropdown(mobileDropdown === link.name ? null : link.name)}
+                                                >
+                                                    {link.name}
+                                                    <ChevronDown className={`w-6 h-6 transition-transform duration-300 ${mobileDropdown === link.name ? 'rotate-180' : ''}`} />
+                                                </button>
+
+                                                {/* Mobile Submenu with Animation */}
+                                                <div className={`flex flex-col items-center gap-4 w-full overflow-hidden transition-all duration-300 ${mobileDropdown === link.name ? 'max-h-[200px] mt-4 opacity-100' : 'max-h-0 opacity-0'}`}>
+                                                    {link.subItems.map(sub => (
+                                                        <Link
+                                                            key={sub.name}
+                                                            href={sub.href}
+                                                            className="text-xl text-white/70 hover:text-[#FFD700] tracking-wider border-b border-[#FFD700]/30 pb-1 w-1/2 text-center"
+                                                            style={{ fontFamily: 'var(--font-bold-helvetica)' }}
+                                                            onClick={() => setIsOpen(false)}
+                                                        >
+                                                            {sub.name}
+                                                        </Link>
+                                                    ))}
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <Link
+                                                href={link.href}
+                                                className="mobile-nav-link mobile-item text-3xl text-center text-white/90 hover:text-[#FFD700] tracking-widest transition-all hover:scale-110 drop-shadow-lg opacity-0"
                                                 style={{ fontFamily: 'var(--font-bold-helvetica)' }}
-                                                onClick={() => setMobileDropdown(mobileDropdown === link.name ? null : link.name)}
+                                                onClick={() => setIsOpen(false)}
                                             >
                                                 {link.name}
-                                                <ChevronDown className={`w-6 h-6 transition-transform duration-300 ${mobileDropdown === link.name ? 'rotate-180' : ''}`} />
-                                            </button>
+                                            </Link>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
 
-                                            {/* Mobile Submenu with Animation */}
-                                            <div className={`flex flex-col items-center gap-4 w-full overflow-hidden transition-all duration-300 ${mobileDropdown === link.name ? 'max-h-[200px] mt-4 opacity-100' : 'max-h-0 opacity-0'}`}>
-                                                {link.subItems.map(sub => (
-                                                    <Link
-                                                        key={sub.name}
-                                                        href={sub.href}
-                                                        className="text-xl text-white/70 hover:text-[#FFD700] tracking-wider border-b border-[#FFD700]/30 pb-1 w-1/2 text-center"
-                                                        style={{ fontFamily: 'var(--font-bold-helvetica)' }}
-                                                        onClick={() => setIsOpen(false)}
-                                                    >
-                                                        {sub.name}
-                                                    </Link>
-                                                ))}
-                                            </div>
-                                        </>
-                                    ) : (
-                                        <Link
-                                            href={link.href}
-                                            className="mobile-nav-link mobile-item text-3xl text-center text-white/90 hover:text-[#FFD700] tracking-widest transition-all hover:scale-110 drop-shadow-lg opacity-0"
-                                            style={{ fontFamily: 'var(--font-bold-helvetica)' }}
-                                            onClick={() => setIsOpen(false)}
-                                        >
-                                            {link.name}
-                                        </Link>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
+                            <div className="flex flex-col items-center gap-4 w-full px-8 pb-8">
+                                {/* Pronight Pass Mobile (NOW ANIMATED) */}
+                                <Link
+                                    href="/get-pass"
+                                    className="mobile-pronight mobile-item w-full max-w-xs mx-auto relative group overflow-hidden opacity-0"
+                                    onClick={() => setIsOpen(false)}
+                                >
+                                    <div
+                                        className="absolute inset-0 bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] rounded-lg"
+                                        style={{
+                                            maskImage: 'radial-gradient(circle at 0 50%, transparent 10px, black 10.5px), radial-gradient(circle at 100% 50%, transparent 10px, black 10.5px)',
+                                            WebkitMaskImage: 'radial-gradient(circle at 0 50%, transparent 10px, black 10.5px), radial-gradient(circle at 100% 50%, transparent 10px, black 10.5px)'
+                                        }}
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent -translate-x-[200%] animate-[shimmer_3s_infinite]" />
 
-                        <div className="flex flex-col items-center gap-4 w-full px-8 pb-8">
-                            {/* Pronight Pass Mobile */}
-                            <Link
-                                href="/get-pass"
-                                className="mobile-item w-full max-w-xs mx-auto relative group overflow-hidden"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                <div
-                                    className="absolute inset-0 bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] rounded-lg"
-                                    style={{
-                                        maskImage: 'radial-gradient(circle at 0 50%, transparent 10px, black 10.5px), radial-gradient(circle at 100% 50%, transparent 10px, black 10.5px)',
-                                        WebkitMaskImage: 'radial-gradient(circle at 0 50%, transparent 10px, black 10.5px), radial-gradient(circle at 100% 50%, transparent 10px, black 10.5px)'
-                                    }}
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent -translate-x-[200%] animate-[shimmer_3s_infinite]" />
+                                    <div className="relative px-6 py-4 flex items-center justify-center gap-3 text-white font-black text-lg uppercase tracking-widest z-10">
+                                        <Ticket className="w-6 h-6 fill-white/20 stroke-white" />
+                                        <span>PRONIGHT PASS</span>
+                                    </div>
+                                </Link>
 
-                                <div className="relative px-6 py-4 flex items-center justify-center gap-3 text-white font-black text-lg uppercase tracking-widest z-10">
-                                    <Ticket className="w-6 h-6 fill-white/20 stroke-white" />
-                                    <span>PRONIGHT PASS</span>
-                                </div>
-                            </Link>
-
-                            {/* CTA Button */}
-                            <Link
-                                href="https://regi.mithibaikshitij.com/"
-                                className="mobile-cta mobile-item mt-4 px-12 py-4 rounded-none border-2 border-[#FFD700] bg-black/50 text-[#FFD700] font-bold text-2xl uppercase tracking-widest hover:bg-[#FFD700] hover:text-black transition-all shadow-[0_0_20px_rgba(255,215,0,0.2)] hover:shadow-[0_0_30px_rgba(255,215,0,0.6)] opacity-0"
-                                style={{ fontFamily: 'var(--font-bold-helvetica)' }}
-                                onClick={() => setIsOpen(false)}
-                            >
-                                REGISTER NOW
-                            </Link>
+                                {/* CTA Button */}
+                                <Link
+                                    href="https://regi.mithibaikshitij.com/"
+                                    className="mobile-cta mobile-item mt-4 px-12 py-4 rounded-none border-2 border-[#FFD700] bg-black/50 text-[#FFD700] font-bold text-2xl uppercase tracking-widest hover:bg-[#FFD700] hover:text-black transition-all shadow-[0_0_20px_rgba(255,215,0,0.2)] hover:shadow-[0_0_30px_rgba(255,215,0,0.6)] opacity-0"
+                                    style={{ fontFamily: 'var(--font-bold-helvetica)' }}
+                                    onClick={() => setIsOpen(false)}
+                                >
+                                    REGISTER NOW
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </div>

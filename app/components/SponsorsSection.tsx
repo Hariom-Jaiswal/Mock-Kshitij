@@ -40,7 +40,7 @@ const SectionHeader = ({ title }: { title: string }) => (
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-50px" }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="flex flex-col items-center mb-12 md:mb-16 z-10 relative w-full text-center"
+        className="flex flex-col items-center mb-8 md:mb-10 z-10 relative w-full text-center"
     >
         {/* BRAND ALIGNED HEADER: Massize, Gold, Red Shadow */}
         <h3 className="text-3xl md:text-5xl font-black text-[#FFD700] tracking-wider drop-shadow-[3px_3px_0_#DC2626] uppercase mb-4 px-4"
@@ -54,7 +54,7 @@ const SectionHeader = ({ title }: { title: string }) => (
 );
 
 const GoldenDivider = () => (
-    <div className="w-full max-w-4xl h-[1px] bg-gradient-to-r from-transparent via-[#FFD700]/30 to-transparent my-16 md:my-24" />
+    <div className="w-full max-w-4xl h-[1px] bg-gradient-to-r from-transparent via-[#FFD700]/30 to-transparent my-8 md:my-12" />
 );
 
 const PremiumGlassCard = ({ name, src, size = "md", delay = 0, isTitle = false }: { name: string, src?: string, size?: "lg" | "md" | "sm", delay?: number, isTitle?: boolean }) => {
@@ -125,13 +125,13 @@ const PremiumGlassCard = ({ name, src, size = "md", delay = 0, isTitle = false }
 
 export default function SponsorsSection() {
     return (
-        <section className="relative w-full min-h-screen bg-[#050505] py-4 pb-20md:py-2 md:pb-56 flex flex-col items-center overflow-visible">
+        <section className="relative w-full min-h-screen bg-[#050505] py-4 pb-12 md:pb-24 flex flex-col items-center overflow-visible">
 
             {/* BACKGROUND */}
             <SponsorsLivingBackground />
 
             {/* MAIN CONTENT */}
-            <div className="relative z-10 w-full max-w-screen-2xl px-4 flex flex-col items-center gap-16 md:gap-24">
+            <div className="relative z-10 w-full max-w-screen-2xl px-4 flex flex-col items-center gap-8 md:gap-16">
 
                 {/* PAGE HEADER - UPDATED */}
                 <motion.div
@@ -182,7 +182,7 @@ export default function SponsorsSection() {
 
                 {/* --- ASSOCIATE & CO --- */}
                 <GoldenDivider />
-                <div className="w-full grid md:grid-cols-2 gap-20 md:gap-32 max-w-7xl">
+                <div className="w-full grid md:grid-cols-2 gap-12 md:gap-20 max-w-7xl">
                     <div className="flex flex-col items-center">
                         <SectionHeader title="Associate Sponsors" />
                         <div className="flex flex-wrap justify-center gap-6 md:gap-8">
@@ -219,7 +219,7 @@ export default function SponsorsSection() {
                 <div className="w-full flex flex-col items-center">
                     <SectionHeader title="Exclusive Partners" />
 
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:flex md:flex-wrap justify-center gap-4 md:gap-x-24 gap-y-8 md:gap-y-16 w-full max-w-[90vw] px-2 md:px-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:flex md:flex-wrap justify-center gap-4 md:gap-x-24 gap-y-8 md:gap-y-12 w-full max-w-[90vw] px-2 md:px-4">
                         {SPONSORS_DATA.exclusive.map((s, i) => (
                             <motion.div
                                 key={i}

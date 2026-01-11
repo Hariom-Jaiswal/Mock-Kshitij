@@ -15,6 +15,14 @@ export default function QRGeneratorPage() {
         college: ''
     });
 
+    const shortForm = {
+        n: formData.name,
+        e: formData.email,
+        p: formData.phoneNumber,
+        g: formData.gender,
+        c: formData.college
+    };
+
     // Validation State
     const [errors, setErrors] = useState({
         name: '',
@@ -25,8 +33,7 @@ export default function QRGeneratorPage() {
     });
 
     const [showQR, setShowQR] = useState(false);
-    const [timestamp, setTimestamp] = useState(0);
-    const [flicker, setFlicker] = useState(0); // Used to make the QR dynamic
+    const [f, setFlicker] = useState(0); // Used to make the QR dynamic
 
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [isChecked, setIsChecked] = useState(false);
@@ -129,7 +136,6 @@ export default function QRGeneratorPage() {
 
     // Step 2: Actual Generation (Called by Modal)
     const executeGeneration = () => {
-        setTimestamp(Date.now());
         setFlicker(0);
         setShowQR(false);
         setShowConfirmModal(false);
@@ -149,7 +155,7 @@ export default function QRGeneratorPage() {
 
     // JSON Payload for QR 
     // Includes 'flicker' state so the QR pattern changes every second (Dynamic effect)
-    const qrData = JSON.stringify({ ...formData, timestamp, flicker });
+    const qrData = JSON.stringify({ ...formData, f });
 
     return (
         <main className="min-h-screen bg-[#121212] flex flex-col items-center justify-center relative px-4 py-20 overflow-x-hidden">
@@ -193,8 +199,8 @@ export default function QRGeneratorPage() {
 
                             <ul className="text-black font-bold text-sm md:text-base space-y-1 list-disc pl-4 marker:text-black">
                                 <li>This QR is <strong>ONLY</strong> for pre-verification at the Ticketing desk.</li>
-                                <li>It will <span className="outline outline-black text-white/90 px-1">NOT GRANT ENTRY</span> to the concert area.</li>
-                                <li>Your actual pass will be issued to your email after scanning this.</li>
+                                <li>It will <span className="outline outline-black text-white/90 px-1">NOT GRANT ENTRY</span> to the Kshitij Venue.</li>
+                                <li>Your actual pass will be issued to your email after scanning this at the Ticketing desk.</li>
                             </ul>
                         </div>
                     </div>
@@ -319,24 +325,27 @@ export default function QRGeneratorPage() {
                                                 clipPath: `polygon(
                                                     0 0, 
                                                     100% 0, 
-                                                    100% calc(320px - 15px), 
-                                                    calc(100% - 15px) 320px, 
-                                                    100% calc(320px + 15px), 
+                                                    100% calc(340px - 15px), 
+                                                    calc(100% - 15px) 340px, 
+                                                    100% calc(340px + 15px), 
                                                     100% 100%, 
                                                     0 100%, 
-                                                    0 calc(320px + 15px), 
-                                                    15px 320px, 
-                                                    0 calc(320px - 15px)
+                                                    0 calc(340px + 15px), 
+                                                    15px 340px, 
+                                                    0 calc(340px - 15px)
                                                 )`
                                             }}
                                         >
+
                                             {/* TOP Content (QR) */}
                                             <div className="p-6 pb-8 w-full flex flex-col items-center min-h-[320px]">
                                                 <QRCodeCanvas
                                                     value={qrData}
                                                     size={256}
-                                                    level={"M"}
-                                                    marginSize={0}
+                                                    level={"H"}
+                                                    marginSize={1}
+                                                    fgColor="#000000"
+                                                    bgColor="#FFFFFF"
                                                     imageSettings={{
                                                         src: "/LogoBlack.png",
                                                         x: undefined,
@@ -347,13 +356,22 @@ export default function QRGeneratorPage() {
                                                     }}
                                                     className={`w-full h-auto`}
                                                 />
+                                                {/* STAMP: "NO ENTRY" Disclaimer */}
+                                                <div className="mt-4 mb-2 opacity-80 mix-blend-multiply w-[80%] mx-auto">
+                                                    <div className="border-[2px] border-[#DC2626] border-dashed px-3 py-1 bg-[#DC2626]/5 rounded-sm flex items-center justify-center gap-2">
+                                                        <AlertTriangle className="w-4 h-4 text-[#DC2626]" strokeWidth={2.5} />
+                                                        <p className="text-[#DC2626] text-[10px] font-black tracking-widest uppercase text-center">
+                                                            Not Valid for Entry
+                                                        </p>
+                                                    </div>
+                                                </div>
                                             </div>
 
                                             {/* DIVIDER LINE (Aligned with Notch Center at 320px) */}
-                                            <div className="absolute top-[320px] left-6 right-6 border-t-2 border-dashed border-black/15 -translate-y-1/2" />
+                                            <div className="absolute top-[340px] left-6 right-6 border-t-2 border-dashed border-black/15 -translate-y-1/2" />
 
                                             {/* BOTTOM Content (Details) */}
-                                            <div className="p-6 pt-12 w-full text-center">
+                                            <div className="p-6 pt-0 w-full text-center">
                                                 <p className="text-black font-bold uppercase tracking-widest text-lg leading-none mb-1">{formData.name}</p>
                                                 <p className="text-black/60 text-xs font-mono break-all lowercase">{formData.email}</p>
                                                 {formData.college === "Mithibai College" && (
@@ -361,6 +379,7 @@ export default function QRGeneratorPage() {
                                                         {formData.college}
                                                     </p>
                                                 )}
+
                                             </div>
                                         </div>
                                     </div>
@@ -407,14 +426,14 @@ export default function QRGeneratorPage() {
                                         <li className="flex items-start gap-3">
                                             <span className="text-red-500 mt-0.5 font-black text-lg">!</span>
                                             <span>
-                                                <strong className="text-red-400">EMAIL STORAGE:</strong> <br /> Ensure your inbox has sufficient storage. If delivery fails, the pass will not be reissued.
+                                                <strong className="text-red-400">EMAIL STORAGE:</strong> <br /> Ensure sufficient inbox storage. Failed delivery will not be reissued.
 
                                             </span>
                                         </li>
                                         <li className="flex items-start gap-3">
                                             <span className="text-red-500 mt-0.5 font-black text-lg">!</span>
                                             <span>
-                                                <strong className="text-red-400">YOUR RESPONSIBILITY:</strong> <br />You must verify the pass received email before leaving the issuing desk.
+                                                <strong className="text-red-400">YOUR RESPONSIBILITY:</strong> <br />Ensure pronight pass email is received before leaving.
                                             </span>
                                         </li>
                                     </ul>
