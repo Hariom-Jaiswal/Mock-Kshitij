@@ -35,14 +35,26 @@ const SponsorsLivingBackground = () => {
 };
 
 const SectionHeader = ({ title }: { title: string }) => (
-    <div className="flex flex-col items-center mb-16 z-10 relative w-full text-center">
+    <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-50px" }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="flex flex-col items-center mb-12 md:mb-16 z-10 relative w-full text-center"
+    >
         {/* BRAND ALIGNED HEADER: Massize, Gold, Red Shadow */}
-        <h3 className="text-4xl md:text-6xl font-black text-[#FFD700] tracking-wider drop-shadow-[3px_3px_0_#DC2626] uppercase mb-4 px-4"
+        <h3 className="text-3xl md:text-5xl font-black text-[#FFD700] tracking-wider drop-shadow-[3px_3px_0_#DC2626] uppercase mb-4 px-4"
             style={{ fontFamily: "var(--font-bold-helvetica)" }}
         >
             {title}
         </h3>
-    </div>
+        {/* Decorative Underline */}
+        <div className="w-24 h-1 bg-[#FFD700] rounded-full opacity-60" />
+    </motion.div>
+);
+
+const GoldenDivider = () => (
+    <div className="w-full max-w-4xl h-[1px] bg-gradient-to-r from-transparent via-[#FFD700]/30 to-transparent my-16 md:my-24" />
 );
 
 const PremiumGlassCard = ({ name, src, size = "md", delay = 0, isTitle = false }: { name: string, src?: string, size?: "lg" | "md" | "sm", delay?: number, isTitle?: boolean }) => {
@@ -155,18 +167,22 @@ export default function SponsorsSection() {
 
                 {/* --- POWERED BY --- */}
                 {SPONSORS_DATA.powered.length > 0 && (
-                    <div className="w-full flex flex-col items-center mt-12">
-                        <SectionHeader title="Powered By" />
-                        <div className="flex flex-wrap justify-center gap-8 md:gap-12 px-4">
-                            {SPONSORS_DATA.powered.map((s, i) => (
-                                <PremiumGlassCard key={i} name={s.name} src={s.src} size="md" delay={i * 0.15} />
-                            ))}
+                    <>
+                        <GoldenDivider />
+                        <div className="w-full flex flex-col items-center">
+                            <SectionHeader title="Powered By" />
+                            <div className="flex flex-wrap justify-center gap-8 md:gap-12 px-4">
+                                {SPONSORS_DATA.powered.map((s, i) => (
+                                    <PremiumGlassCard key={i} name={s.name} src={s.src} size="md" delay={i * 0.15} />
+                                ))}
+                            </div>
                         </div>
-                    </div>
+                    </>
                 )}
 
                 {/* --- ASSOCIATE & CO --- */}
-                <div className="w-full grid md:grid-cols-2 gap-20 md:gap-32 border-t border-white/10 pt-20 max-w-7xl">
+                <GoldenDivider />
+                <div className="w-full grid md:grid-cols-2 gap-20 md:gap-32 max-w-7xl">
                     <div className="flex flex-col items-center">
                         <SectionHeader title="Associate Sponsors" />
                         <div className="flex flex-wrap justify-center gap-6 md:gap-8">
@@ -187,7 +203,8 @@ export default function SponsorsSection() {
                 </div>
 
                 {/* --- SPECIAL PARTNERS --- */}
-                <div className="w-full flex flex-col items-center mt-12">
+                <GoldenDivider />
+                <div className="w-full flex flex-col items-center">
                     <SectionHeader title="Special Partners" />
                     <div className="flex flex-wrap justify-center gap-6 md:gap-10">
                         {SPONSORS_DATA.special.map((s, i) => (
@@ -197,13 +214,12 @@ export default function SponsorsSection() {
                 </div>
 
                 {/* --- EXCLUSIVE PARTNERS (GRID) - REFINED --- */}
-                <div className="w-full flex flex-col items-center pt-24 border-t border-white/10">
-                    {/* Consistent Header Font */}
-                    <h3 className="text-[#FFD700] font-black uppercase tracking-[0.2em] text-2xl md:text-3xl mb-12 drop-shadow-[2px_2px_0_#DC2626]" style={{ fontFamily: 'var(--font-bold-helvetica)' }}>
-                        Exclusive Partners
-                    </h3>
+                {/* Removed border and reducing gap for seamless flow */}
+                <GoldenDivider />
+                <div className="w-full flex flex-col items-center">
+                    <SectionHeader title="Exclusive Partners" />
 
-                    <div className="flex flex-wrap justify-center gap-x-16 md:gap-x-24 gap-y-16 max-w-[90vw] px-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:flex md:flex-wrap justify-center gap-4 md:gap-x-24 gap-y-8 md:gap-y-16 w-full max-w-[90vw] px-2 md:px-4">
                         {SPONSORS_DATA.exclusive.map((s, i) => (
                             <motion.div
                                 key={i}
@@ -217,14 +233,15 @@ export default function SponsorsSection() {
                                     y: { duration: 3 + Math.random() * 2, repeat: Infinity, ease: "easeInOut", delay: Math.random() }
                                 }}
                                 whileHover={{ scale: 1.15, filter: "brightness(1.2)" }}
-                                className="relative w-32 h-16 md:w-48 md:h-24 cursor-pointer group flex items-center justify-center transition-all duration-300"
+                                // Mobile: w-full (fits grid), Desktop: w-48
+                                className="relative w-full h-20 md:w-48 md:h-24 cursor-pointer group flex items-center justify-center transition-all duration-300"
                             >
                                 {s.src ? (
                                     <div className="relative w-full h-full transition-all duration-300">
                                         <Image src={s.src} alt={s.name} fill className="object-contain opacity-90 group-hover:opacity-100" />
                                     </div>
                                 ) : (
-                                    <span className="text-white/80 font-bold uppercase tracking-wider text-xs md:text-sm group-hover:text-[#FFD700] transition-colors text-center"
+                                    <span className="text-white/80 font-bold uppercase tracking-wider text-[10px] md:text-sm group-hover:text-[#FFD700] transition-colors text-center"
                                         style={{ fontFamily: 'var(--font-helvetica)' }}
                                     >
                                         {s.name}

@@ -140,7 +140,7 @@ export default function Countdown() {
 
     useEffect(() => {
         // Target Date: December 25, 2025
-        const targetDate = new Date('2026-01-12T00:00:00').getTime();
+        const targetDate = new Date('2026-01-20T00:00:00').getTime();
 
         // Calculate actual time left
         const now = new Date().getTime();

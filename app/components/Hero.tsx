@@ -160,8 +160,10 @@ export default function Hero() {
                     style={{ fontFamily: 'var(--font-amsterdam)' }}>
                     <Link
                         href="https://mithibaicultural.in/"
+
                         target="_blank" rel="noreferrer" className="gap-8 flex flex-col sm:flex-row sm:gap-2" >
                         <span className="" style={{ fontFamily: 'var(--font-amsterdam)' }}>Mithibai Cultural</span> <span className="" style={{ fontFamily: 'var(--font-amsterdam)' }}>Committee</span>
+
                     </Link>
                 </h2>
 

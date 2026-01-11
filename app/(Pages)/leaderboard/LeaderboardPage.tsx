@@ -4,38 +4,25 @@ import { useRef, useEffect, useState } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { Trophy, Medal, Crown } from 'lucide-react';
-import { getLeaderboard, LeaderboardEntry } from '@/app/actions/getLeaderboard';
+import { LeaderboardEntry } from '@/app/actions/getLeaderboard';
 
-export default function LeaderboardPage() {
+interface LeaderboardPageProps {
+    initialData: LeaderboardEntry[];
+    initialError: string | null;
+}
+
+export default function LeaderboardPage({
+    initialData,
+    initialError
+}: LeaderboardPageProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const textRef = useRef<HTMLDivElement>(null);
     const tableRef = useRef<HTMLDivElement>(null);
 
-    const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        const fetchLeaderboard = async () => {
-            const result = await getLeaderboard();
-            if (result.success && result.data) {
-                setLeaderboard(result.data);
-            } else {
-                setError(result.error || "Failed to load leaderboard");
-                // Provide dummy data for visual testing if fetch fails (Optional: Remove in production)
-                // setLeaderboard([
-                //     { rank: 1, college: 'Mithibai College', score: 2500 },
-                //     { rank: 2, college: 'NM College', score: 2350 },
-                //     { rank: 3, college: 'Jai Hind College', score: 2100 },
-                //     { rank: 4, college: 'UPG College', score: 1800 },
-                //     { rank: 5, college: 'KC College', score: 1500 },
-                // ]);
-            }
-            setLoading(false);
-        };
-
-        fetchLeaderboard();
-    }, []);
+    // Use server-fetched data (from ISR cache)
+    const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>(initialData);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(initialError);
 
     useEffect(() => {
         if (loading) return;
