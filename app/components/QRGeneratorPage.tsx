@@ -172,7 +172,7 @@ export default function QRGeneratorPage() {
                 {/* Header */}
                 <div className="text-center space-y-4">
                     <h1 className="text-6xl md:text-8xl font-black text-[#FFD700] tracking-wider drop-shadow-[4px_4px_0_#DC2626]" style={{ fontFamily: 'var(--font-bold-helvetica)' }}>
-                        GET YOUR PASS
+                        GET YOUR TOKEN
                     </h1>
                     <div className="bg-[#DC2626] text-white px-4 py-1 rotate-[-2deg] inline-block shadow-lg">
                         <p className="text-xl md:text-3xl font-bold uppercase tracking-widest" style={{ fontFamily: 'var(--font-helvetica-neue)' }}>

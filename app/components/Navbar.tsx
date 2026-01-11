@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Menu, X, ChevronDown, Ticket } from 'lucide-react';
+import { PiCrownFill, PiUserPlusFill } from 'react-icons/pi'; // Added UserPlus for Register
 import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -14,7 +15,7 @@ type NavItem = {
 };
 
 const navItems: NavItem[] = [
-    { name: 'HOME', href: '/' },
+    // { name: 'HOME', href: '/' }, // Removed as per requested state
     { name: 'ABOUT', href: '/about' },
     { name: 'EVENTS', href: '/events' },
     { name: 'INTERCITY', href: '/intercity' },
@@ -42,7 +43,7 @@ export default function Navbar() {
 
     // GSAP ScrollTrigger Animation
     useEffect(() => {
-        gsap.registerPlugin(ScrollTrigger); // Register inside useEffect to avoid SSR issues
+        gsap.registerPlugin(ScrollTrigger);
 
         const nav = navRef.current;
         const linksContainer = linksContainerRef.current;
@@ -57,32 +58,29 @@ export default function Navbar() {
             const ctx = gsap.context(() => {
                 const tl = gsap.timeline({
                     scrollTrigger: {
-                        trigger: "body", // Use body to track overall scroll
+                        trigger: "body",
                         start: "top top",
-                        end: "100vh top", // Animate over the first 100vh (Hero section)
-                        scrub: 1, // Smooth scrubbing
+                        end: "100vh top",
+                        scrub: 1,
                     }
                 });
 
-                // 1. Staggered Travel to Logo (Move Left) - Starts immediately
-                tl.to(Array.from(links), { // Convert to array for safety
+                tl.to(Array.from(links), {
                     opacity: 0,
-                    x: -150, // Move significantly left towards logo
+                    x: -150,
                     stagger: 0.05,
-                    duration: 0.4, // Takes up first 40% of scroll
+                    duration: 0.4,
                     ease: "power1.in"
                 }, 0);
 
-                // 2. Collapse Container Width - Starts after links begin fading
                 tl.to(linksContainer, {
                     width: 0,
                     paddingLeft: 0,
-                    pointerEvents: 'none', // DISABLE clicks when collapsed
-                    duration: 0.8, // Takes up 50% of scroll
+                    pointerEvents: 'none',
+                    duration: 0.8,
                     ease: "power1.inOut"
                 }, 0.3);
 
-                // 3. Transform Navbar Structure (Shape/Position) - Syncs with container collapse
                 tl.to(nav, {
                     width: 'auto',
                     left: '24px',
@@ -94,13 +92,12 @@ export default function Navbar() {
                     ease: "power1.inOut"
                 }, 0.3);
 
-                // 4. Apply Glass Effect (Strictly at the VERY END)
                 tl.to(nav, {
                     backgroundColor: 'rgba(18, 18, 18, 0.8)',
                     backdropFilter: 'blur(16px)',
                     borderColor: 'rgba(255, 215, 0, 0.3)',
                     boxShadow: '0 0 30px rgba(255, 215, 0, 0.15)',
-                    duration: 0.1, // Only happens in the last 20% of scroll
+                    duration: 0.1,
                     ease: "none"
                 }, 0.9);
 
@@ -111,15 +108,13 @@ export default function Navbar() {
         return () => mm.revert();
     }, []);
 
-    // Hover Animation (Expand when collapsed)
     const handleMouseEnter = () => {
-        // Only expand if we are scrolled past the hero (roughly)
         if (window.scrollY < window.innerHeight * 0.5) return;
 
         gsap.to(linksContainerRef.current, {
             width: 'auto',
             paddingLeft: '32px',
-            pointerEvents: 'auto', // RE-ENABLE clicks on hover
+            pointerEvents: 'auto',
             duration: 0.4,
             ease: 'power2.out'
         });
@@ -146,7 +141,7 @@ export default function Navbar() {
         gsap.to(linksContainerRef.current, {
             width: 0,
             paddingLeft: 0,
-            pointerEvents: 'none', // DISABLE clicks on leave
+            pointerEvents: 'none',
             duration: 0.4,
             ease: 'power2.inOut'
         });
@@ -161,27 +156,24 @@ export default function Navbar() {
         if (isOpen) {
             const tl = gsap.timeline();
 
-            // 1. Logo Bounce In
             tl.fromTo('.mobile-logo',
                 { y: -50, opacity: 0, scale: 0 },
                 { y: 0, opacity: 1, scale: 1, duration: 0.6, ease: 'back.out(1.7)' }
             );
 
-            // 2. Links Stagger In (from sides)
             tl.fromTo('.mobile-nav-link',
                 { x: -50, opacity: 0 },
                 { x: 0, opacity: 1, stagger: 0.2, duration: 0.2, ease: 'power2.out' },
                 "-=0.4"
             );
 
-            // 3. Pronight Pass Slide Up (New)
-            tl.fromTo('.mobile-pronight',
+            // Added opacity/stagger for extra buttons
+            tl.fromTo('.mobile-extra-btn',
                 { y: 30, opacity: 0 },
-                { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' },
+                { y: 0, opacity: 1, stagger: 0.1, duration: 0.5, ease: 'power2.out' },
                 "-=0.1"
             );
 
-            // 4. CTA Button Slide Up
             tl.fromTo('.mobile-cta',
                 { y: 50, opacity: 0 },
                 { y: 0, opacity: 1, duration: 1, ease: 'power2.out' },
@@ -189,7 +181,6 @@ export default function Navbar() {
             );
         }
 
-        // Lock Body Scroll
         if (isOpen) {
             document.body.style.overflow = 'hidden';
         } else {
@@ -197,7 +188,7 @@ export default function Navbar() {
         }
 
         return () => {
-            document.body.style.overflow = ''; // Cleanup
+            document.body.style.overflow = '';
         };
     }, [isOpen]);
 
@@ -245,7 +236,7 @@ export default function Navbar() {
                                             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#FFD700] transition-all duration-300 group-hover:w-full shadow-[0_0_10px_#FFD700]" />
                                         </button>
 
-                                        {/* Dropdown Menu */}
+                                        {/* Dropdown Menu (Standard) */}
                                         <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2">
                                             <div className="bg-[#121212]/95 backdrop-blur-xl border border-[#FFD700]/20 rounded-xl shadow-[0_0_30px_rgba(255,215,0,0.1)] overflow-hidden min-w-[160px] flex flex-col p-2">
                                                 {link.subItems.map((sub) => (
@@ -281,14 +272,31 @@ export default function Navbar() {
                             </div>
                         ))}
 
-                        {/* Pronight Pass Ticket Button (Desktop) */}
+                        {/* CREATIVE: Expanding Crown Capsule (Leaderboard) */}
                         <Link
-                            href="/get-pass"
+                            href="/leaderboard"
+                            className="relative flex items-center justify-start group overflow-hidden transition-all duration-500 ease-out w-10 hover:w-40 h-10 rounded-full bg-gradient-to-r from-[#FFD700] via-[#FDB931] to-[#FFD700] shadow-[0_0_20px_rgba(255,215,0,0.3)] hover:shadow-[0_0_30px_rgba(255,215,0,0.6)]"
+                        >
+                            <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/50 to-transparent -translate-x-[200%] group-hover:translate-x-[200%] transition-transform duration-[1s]" />
+
+                            <div className="absolute left-0 w-10 h-10 flex items-center justify-center z-20 text-black">
+                                <PiCrownFill className="w-5 h-5 transition-transform group-hover:scale-110 group-hover:rotate-12" />
+                            </div>
+
+                            <div className="absolute left-10 whitespace-nowrap overflow-hidden transition-all duration-500 opacity-0 group-hover:opacity-100 z-10">
+                                <span className="text-black font-black text-xs tracking-widest pr-4" style={{ fontFamily: 'var(--font-helvetica-neue)' }}>
+                                    LEADERBOARD
+                                </span>
+                            </div>
+                        </Link>
+
+                        {/* Pronight Pass Ticket Button */}
+                        <Link
+                            href="/get-token"
                             className="relative px-6 py-2 mx-2 group overflow-hidden"
                             onMouseEnter={() => setShowLegacyVideo(true)}
                             onMouseLeave={() => setShowLegacyVideo(false)}
                         >
-                            {/* Ticket Shape Background - CRIMSON GRADIENT */}
                             <div
                                 className="absolute inset-0 bg-gradient-to-r from-[#991b1b] via-[#dc2626] to-[#991b1b] rounded-sm transform transition-transform duration-300 group-hover:scale-105"
                                 style={{
@@ -298,24 +306,22 @@ export default function Navbar() {
                                     WebkitMaskComposite: 'source-in'
                                 }}
                             >
-                                {/* Holographic Shine */}
                                 <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent -translate-x-[200%] group-hover:translate-x-[200%] transition-transform duration-[1.5s] ease-in-out" />
                             </div>
 
-                            {/* Dashed Vertical Divider */}
                             <div className="absolute top-1 bottom-1 left-[25%] border-l border-white/20 border-dashed" />
 
                             <div className="relative flex items-center gap-3 text-white font-black text-xs tracking-widest z-10" style={{ fontFamily: 'var(--font-helvetica-neue)' }}>
                                 <Ticket className="w-4 h-4 fill-white/20 stroke-white stroke-2" />
-                                <span>PRONIGHT PASS</span>
+                                <span>PRONIGHT TOKEN</span>
                             </div>
                         </Link>
 
-                        {/* HOVER VIDEO OVERLAY - LEGACY HYPE */}
+                        {/* HOVER VIDEO OVERLAY */}
                         <div
                             className={`fixed inset-0 z-[-1] transition-opacity duration-700 pointer-events-none ${showLegacyVideo ? 'opacity-100' : 'opacity-0'}`}
                         >
-                            <div className="absolute inset-0 bg-black/60 z-10" /> {/* Dark overlay for contrast */}
+                            <div className="absolute inset-0 bg-black/60 z-10" />
                             <video
                                 src="/Teaser.mp4"
                                 autoPlay
@@ -325,20 +331,27 @@ export default function Navbar() {
                                 preload="auto"
                                 className="w-full h-full object-cover transform scale-105"
                             />
-                            <div className="absolute inset-0 z-20 flex items-center justify-center">
-                                {/*<h2 className="text-[#FFD700] text-9xl font-black tracking-tighter opacity-20 mix-blend-overlay scale-150 select-none" style={{ fontFamily: 'var(--font-bold-helvetica)' }}>
-                                    LEGACY
-                                </h2>*/}
-                            </div>
                         </div>
 
-                        {/* Register Button */}
+                        {/* REDESIGNED: REGISTER BUTTON (Expanding Capsule) */}
                         <Link
                             href="https://regi.mithibaikshitij.com/"
-                            className="px-6 py-1.5 mx-3 my-3 rounded-full bg-[#FFD700] text-black font-bold text-sm tracking-wider hover:bg-[#dc2626] hover:text-white hover:shadow-[0_0_20px_rgba(255,215,0,0.2)] transition-all transform hover:-translate-y-0.5 shrink-0"
-                            style={{ fontFamily: 'var(--font-helvetica-neue)' }}
+                            className="relative flex items-center justify-start group overflow-hidden transition-all duration-500 ease-out w-10 hover:w-[110px] h-10 rounded-full bg-gradient-to-r from-[#FFD700] via-[#FDB931] to-[#FFD700] shadow-[0_0_20px_rgba(255,215,0,0.3)] hover:shadow-[0_0_40px_rgba(255,215,0,0.6)] ml-2"
                         >
-                            Register
+                            {/* Inner Shine */}
+                            <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/50 to-transparent -translate-x-[200%] group-hover:translate-x-[200%] transition-transform duration-[1s]" />
+
+                            {/* Icon (Always Visible/Centered) */}
+                            <div className="absolute left-0 w-10 h-10 flex items-center justify-center z-20 text-black">
+                                <PiUserPlusFill className="w-5 h-5 transition-transform group-hover:scale-110" />
+                            </div>
+
+                            {/* Text (Slide Reveal) */}
+                            <div className="absolute left-10 whitespace-nowrap overflow-hidden transition-all duration-500 opacity-0 group-hover:opacity-100 z-10">
+                                <span className="text-black font-black text-xs tracking-widest pr-4" style={{ fontFamily: 'var(--font-helvetica-neue)' }}>
+                                    REGISTER
+                                </span>
+                            </div>
                         </Link>
                     </div>
                 </div>
@@ -401,7 +414,7 @@ export default function Navbar() {
                                         {link.subItems ? (
                                             <>
                                                 <button
-                                                    className="mobile-nav-link mobile-item text-3xl text-center text-white/90 hover:text-[#FFD700] tracking-widest transition-all drop-shadow-lg opacity-0 flex items-center gap-2"
+                                                    className="mobile-nav-link text-3xl text-center text-white/90 hover:text-[#FFD700] tracking-widest transition-all drop-shadow-lg opacity-0 flex items-center gap-2"
                                                     style={{ fontFamily: 'var(--font-bold-helvetica)' }}
                                                     onClick={() => setMobileDropdown(mobileDropdown === link.name ? null : link.name)}
                                                 >
@@ -427,7 +440,7 @@ export default function Navbar() {
                                         ) : (
                                             <Link
                                                 href={link.href}
-                                                className="mobile-nav-link mobile-item text-3xl text-center text-white/90 hover:text-[#FFD700] tracking-widest transition-all hover:scale-110 drop-shadow-lg opacity-0"
+                                                className="mobile-nav-link text-3xl text-center text-white/90 hover:text-[#FFD700] tracking-widest transition-all hover:scale-110 drop-shadow-lg opacity-0"
                                                 style={{ fontFamily: 'var(--font-bold-helvetica)' }}
                                                 onClick={() => setIsOpen(false)}
                                             >
@@ -439,10 +452,25 @@ export default function Navbar() {
                             </div>
 
                             <div className="flex flex-col items-center gap-4 w-full px-8 pb-8">
+                                {/* Leaderboard Mobile Button (Gold) */}
+                                <Link
+                                    href="/leaderboard"
+                                    className="mobile-extra-btn w-full max-w-xs mx-auto relative group overflow-hidden opacity-0"
+                                    onClick={() => setIsOpen(false)}
+                                >
+                                    <div className="absolute inset-0 bg-gradient-to-r from-[#FFD700] via-[#FDB931] to-[#FFD700] rounded-full" />
+                                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent -translate-x-[200%] animate-[shimmer_3s_infinite]" />
+
+                                    <div className="relative px-6 py-4 flex items-center justify-center gap-3 text-black font-black text-lg uppercase tracking-widest z-10">
+                                        <PiCrownFill className="w-6 h-6" />
+                                        <span>LEADERBOARD</span>
+                                    </div>
+                                </Link>
+
                                 {/* Pronight Pass Mobile (NOW ANIMATED) */}
                                 <Link
-                                    href="/get-pass"
-                                    className="mobile-pronight mobile-item w-full max-w-xs mx-auto relative group overflow-hidden opacity-0"
+                                    href="/get-token"
+                                    className="mobile-extra-btn w-full max-w-xs mx-auto relative group overflow-hidden opacity-0"
                                     onClick={() => setIsOpen(false)}
                                 >
                                     <div
@@ -456,18 +484,23 @@ export default function Navbar() {
 
                                     <div className="relative px-6 py-4 flex items-center justify-center gap-3 text-white font-black text-lg uppercase tracking-widest z-10">
                                         <Ticket className="w-6 h-6 fill-white/20 stroke-white" />
-                                        <span>PRONIGHT PASS</span>
+                                        <span>PRONIGHT TOKEN</span>
                                     </div>
                                 </Link>
 
-                                {/* CTA Button */}
+                                {/* CTA Button (Mobile Register) - REDESIGNED */}
                                 <Link
                                     href="https://regi.mithibaikshitij.com/"
-                                    className="mobile-cta mobile-item mt-4 px-12 py-4 rounded-none border-2 border-[#FFD700] bg-black/50 text-[#FFD700] font-bold text-2xl uppercase tracking-widest hover:bg-[#FFD700] hover:text-black transition-all shadow-[0_0_20px_rgba(255,215,0,0.2)] hover:shadow-[0_0_30px_rgba(255,215,0,0.6)] opacity-0"
-                                    style={{ fontFamily: 'var(--font-bold-helvetica)' }}
+                                    className="mobile-cta mt-4 w-full max-w-xs mx-auto relative group overflow-hidden opacity-0 shadow-[0_0_20px_rgba(255,215,0,0.3)] hover:shadow-[0_0_30px_rgba(255,215,0,0.6)]"
                                     onClick={() => setIsOpen(false)}
                                 >
-                                    REGISTER NOW
+                                    <div className="absolute inset-0 bg-gradient-to-r from-[#FFD700] via-[#FDB931] to-[#FFD700] rounded-full" />
+                                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent -translate-x-[200%] animate-[shimmer_3s_infinite]" />
+
+                                    <div className="relative px-12 py-4 flex items-center justify-center gap-3 text-black font-black text-2xl uppercase tracking-widest z-10" style={{ fontFamily: 'var(--font-bold-helvetica)' }}>
+                                        <PiUserPlusFill className="w-8 h-8" />
+                                        <span>REGISTER</span>
+                                    </div>
                                 </Link>
                             </div>
                         </div>

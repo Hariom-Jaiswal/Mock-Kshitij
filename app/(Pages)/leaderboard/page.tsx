@@ -3,11 +3,10 @@ import Footer from "@/app/components/Footer";
 import LeaderboardPage from "@/app/(Pages)/leaderboard/LeaderboardPage";
 import { getLeaderboard } from "@/app/actions/getLeaderboard";
 
-// PURE ON-DEMAND REVALIDATION:
-// 1. Page is built ONCE and cached forever (Infinite Cache)
-// 2. ONLY updates when the Webhook is called
-// Result: 0 Edge Requests from visitors. 1 Request only when you edit the sheet.
-export const dynamic = 'force-static';
+// ON-DEMAND + ISR BACKUP:
+// 1. Revalidates every 10 minutes (Safety Net)
+// 2. ALSO updates instantly when Webhook is called
+export const revalidate = 600;
 
 export default async function Page() {
     // Fetch on the server (Cached Indefinitely until revalidated)
